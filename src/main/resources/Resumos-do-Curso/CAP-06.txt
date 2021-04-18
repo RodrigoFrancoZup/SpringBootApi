@@ -1,0 +1,20 @@
+Capítulo 06 - Método PUT, DELETE e tratamento de erro
+Nesse capítulo aprendemos:
+
+Criar um detalhamento de um tópico e para isso aprendemos a pegar um atributo que vem pelo caminho da URI: localhost:8080/topicos/5, nesse caso 5 é o id. Para pegarmos esse campo basta usar a anotação @PathVariable Long id na assinatura do método;
+
+Para criar um método que atenda essa URI basta criar a anotação da seguinte forma: @GetMapping("/{id}");
+
+Para retornar o detalhes de um Topico vamos criar o DetalheDeTopicoDTO, esse terá os atributos que queremos mostar ao cliente. Lembre-se não devemos retornar tipo de classe!
+
+Nesse caso queremos retornar a Lista de resposta de um tópico, então temos que criar a RespostaDTO e no caso retornar uma Lista de RespostaDTO;
+
+Lembrar que as classes DTO devem aparender a fazer um Objeto DTO recebendo o objeto original pelo construtor, por exemplo: RespostaDTO vai receber resposta pelo seu construtor e montar o objeto RespostaDTO;
+
+No método detalhar em TopicoController o retorno deverá ser um ResponseEntity<DetalheDeTopicoDTO> e assim podermos filtar se o ID que cliente mandou existe ou não, caso não exista retornaremos um statu 404 - Not Found. O método ficará assim: 
+
+Para sabermos se um recurso existe basta utilizar o método findById("id") o mesmo irá retornar um optional<recurso>, caso encontre o recurso pelo id ele retorna o recusro em si, caso contrário retorna um null, dai com isso em mão basta verificar o que está dentro do optional, se tem o recurso faça a ação senão retorne 404;
+
+Criando o delete, basta utilizar no método @DeleteMapping("{id}") e no corpo do método utilizar repository.delete(recurso). Lembre-se antes de deletar devemos verificar se há o recurso com id passado;
+
+Criando o update de topico, nesse caso devemos usar no método updade as anotações: @PutMapping("{/id}") e @Transactional. O @Transactional abre uma transação para executar os comandos da JPA e assim atualizar o banco de dados e depois fecha a mesma. Para o update criamos o AtualizacaoTopicoForm.

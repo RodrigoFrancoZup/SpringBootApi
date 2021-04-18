@@ -1,0 +1,36 @@
+Capítulo 04 - Trabalhando com POST
+Nesse capítulo aprendemos:
+
+
+⦁	Anotação @RequestMapping("/NomeDaUri") pode ser retirado do método e colocado na classe, assim podemos configurar para toda URI bater em uma classe controller específica;
+
+⦁	Os metodos passam a a receber agora a anotação seguindo o verbo http utilizado: @PostMapping/@PutMapping/@GetMapping...
+
+⦁	Antes pegavamos atributos/variáves que vinham através da URI, mas esse tipo chamado QueryParams só funciona com verbo GET, ao usar o POST ou outro devemos utilizar a técnica chamada Body Paramns, ou seja, receber atributos pelo corpo da requisição. Para isso basta por dentro do método @RequestBody, por exemplo:                                    public void cadastrarTopico (@RequestBody Topico topico)
+
+⦁	Assim como criamos um DTO para representar dados que vamos retornar ao cliente, devemos criar uma representação para o que vamos receber, vamos chamar de Form, no caso TopicoForm (Uma classe Pojo - com os atributos que vamos receber, deve ter Get() e Set())
+
+⦁	A usar o método save de JPARepository;
+
+⦁	Criamos um conversor dentro de TopicoForm que cria um Topico;
+
+⦁	No conversor do TopicoForm vamos criar um Topico utilizando um construtor de Tópico que recebe os atributos que TopicoForm tem, mas um Topico precisa de um Curso, mas nós só recemos o nome do curso, como vamos fazer? Simples, basta procurar o curso pelo nome do curso. Mas na classe TopícoForm não podemos criar um objeto CursoRepository, como fazer? Simples o método converter vai receber por parametro a referencia de um CursoRepository;
+
+⦁	No metodo cadastra @Postmapping se o retorno for void e tudo ocorrer bem o status de retorno do http será 200 (Significa OK, mas é genérico) o ideal é devolver 201, que significa (OK, um recurso foi criado!), ou seja, não devemos deixar o retorno como void!
+
+⦁	Seguindo a norma do HTTP um status 201 deve retornar também a URI desse recurso criado e uma representação desse recurso;
+
+⦁	Para criar corretamente o retorno 201, seguir os passos:
+	1.	Retorno do método deve ser um ResponseEntity<TopicoDTO>;
+	2.	O método deve receber alem do Form o seguinte parametro -> UriComponentsBuilder uriBuilder
+	3.	Criar a variável -> URI uri  (import do pacote java.net) = uriBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
+	4.	o retono do método será return ReponseEntity.created(uri).body(new TopicoDTO(topico));
+
+⦁	A utilizar a ferramenta Postman para testar um API enviando o seguinte corpo: 	                                                                              
+	  {
+      "titulo" : "Dúvida Testar API",
+	  "mensagem" : "Como vou fazer para testar o método POST de uma API?",
+	  "nomeCurso" : "Spring Boot"
+      }
+
+⦁	Content-Type é um cabeçalho do HTTP que o cliente preenche para avisar o Servidor o tipo de arquivo está enviando, no nosso caso foi application/json

@@ -1,0 +1,41 @@
+Capítulo 01 - Introdução ao Spring Boot
+Nesse capítulo aprendemos:
+
+⦁	Que o Framework Spring pode ser utilizado para aplicações Web tradicionais e para API REST;
+
+⦁	Que podemos criar um Maven Project em nossa IDE e depois ir configurando o mesmo através do arquivo POM.XML e de outros arquivos do Spirig, ou então utilizar o site https://start.spring.io/ para baixar um projeto Spring Boot já configurado (maneira recomendada);
+
+⦁	No site https://start.spring.io/ vamos configurar a versão do Spring a ser utilizado, a Linguagem de programação, Nome do Pacote (goup id), Nome do projeto (artifact id), dependencias, entre outras coisas...
+
+⦁	Vamos adicionar a dependencia Spring Web em nosso projeto. Obs: poderiamos adicionar essa e outras depoist, diretamente na tag <dependency> no arquivo pom.xml;
+
+⦁	Depois de configurar o projeto no site, basta fazer download do mesmo, descompacta-lo e importa-lo na IDE desejada, escolhendo a opção de Projeto Maven, mas tem que ser IMPORT e nao CREATE!;
+
+⦁	No arquivo pom.xml a tag <parent> define que estamos usando o Spring Boot, se tivessemos criado o projeto na forma de Maven Project teriamos que digitar esse trecho;
+
+⦁	Para rodar o projeto basta rodar o metodo main classe  ForumApplication (esse padrão é feito por NomeDoProjetoApplication). Ao rodar esse main() uma instancia do Tomcat é levantada! 
+
+⦁	Não precisamos colocar o projeto em um servidor! Basta rodar o método main!
+
+⦁	Criando um HelloWord:
+	1.	Criar a classe no pacote br.com.alura.controller com nome Hello;
+	2.	Anotar a classe com @Controller;
+	3.	Criar um metodo publico que retornará String;
+	4.	Anotar esse metodo com @RequestMapping("/") com isso esse método será chamado com o URL: localhost:8080/
+	5.	Anotar o metodo também com @ResponseBody com isso a resposta desse método é via Body do HTTP, se deixar sem isso o Spring vai procurar por retorno uma página web que não existe!
+	6.	Rodar o método main() da classe ForumApplication e testar o endereço no navegador localhost:8080/
+
+--------------------------------------------------------------------------------------------------------
+História do Spring
+⦁	É um dos mais antigos frameworks do Java (2002/2003);
+⦁	Desenvolvido por Rod Johnson, era um especialista em Java EE (J2EE), ele dava muita consultoria para melhorar o desenvolvimento com Java EE;
+⦁	Por ser especialista e dar muita consultoria ele escreveu um Livro e nesse livro Rod apresentou um código como se fosse uma biblioteca alternativa ao Java EE;
+⦁	Posteriormente foi criado um forum de discussão que permetia o Download da biblioteca, muitas pessoas começaram a usar;
+⦁	Alguns desenvolvedores deram ideia para Rod lançar essa biblioteca no mercado de forma gratuita como alternativa a Java EE, então houve a reunião de alguns desenvolvedores e em 2004 lançaram o Spring 1.0;
+⦁	Coração do Spring foi baseado na Inversão de Controle e Injeção de Dependencia. Com isso, o seu código (a sua lógica de negócio, sua regra) não precisava correr atrás das dependências da infraestrutura. Nós invertíamos o controle e a infraestrutura chegava pronta para o seu código, para que ele fosse fácil de manter, desacoplado.
+⦁	Em 2013/2014  após uma esfriada do Java EE que por consequencia havia esfriado o Spring surge o Spring Boot;
+⦁	2013/2014 Surgimento do Spring Boot, Spring sofre o novo "Boom", ele volta a crescer!;
+⦁	Ideia do Spring Boot é desenvolver uma aplicaçao sem o uso do container, ou seja, sem ter que rodar a mesma dentro de um servidor. Por isso no Spring Boot basta rodar a classe Application que tem o método main(). Logo não precisamos na compilação o arquivo .WAR, pois o .JAR já basta;
+⦁	.JAR é mais leve, é vantajoso usa-lo;
+⦁	Spring Boot tabém teve como foco a facilidade de configuração, antes era tudo por arquivo .xml, depois por classes com diversas anotações (classes que tinhamos que criar para configurar o Spring) e hoje basta anotar algumas classes da nossa Aplicação;
+⦁	O Spring Boot foi evoluindo, e hoje está firme e forte no mercado como principal framework utilizado por desenvolvedores Java para construir aplicações REST, em micro serviços e em containers. 

@@ -1,0 +1,26 @@
+Capítulo 05 - Validação com Bean Validation
+Nesse capítulo aprendemos:
+
+
+⦁	Como validar os dados (atributos) que o cliente enviará para nossa API;
+
+⦁	Poderiamos fazer vários IF's no Controller que recebe a requisição, mas isso não é uma boa ídeia, pois é trabalhoso e difícil de manter;
+
+⦁	Vamos usar Bean Validation!  Vamos ter que adicionar a dependencia do BeanValidation no arquivo pom.xml, pois nas versões atuais essa dependência não vem por padrão:
+	<dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-validation</artifactId>
+	</dependency>
+
+⦁	Para usar o Bean Validation basta anotar os atributos da classe de modelo com as propriedades desejadas, como: @NotNull @NotEmpty @Lenght( max = x, min = y)...
+
+⦁	Temos que avisar ao controller que deve ocorrer uma validação, para isso devemos adicionar a anotação @Valid no método do controller antes do atributo, por exemplo                                                                        public void cadastrar (@Valid TopicoForm form);
+
+⦁	Podemos criar Validações, por exemplo @cpf não existe, mas podemos criar;
+
+⦁	Ao tentarmos realizar um cadastro que não passe na validação vamos receber um status 400 - Bad Request, mas a mensagem que vem no Body é muito confusa, como simplificar e avisar ao cliente o motivo da falha? Para isso vamos fazer os passos abaixo. Obs vamos criar tudo no pacote config:
+	1.	Uma classe que funciona como interceptador (controller advice), pois ao cadastar algo que não passa na validação uma Exception é lançada, então vamos fazer um Iterceptador que pegue toda Exception. Resumindo: ocorreu exception, vai chamar a classe X;
+	2.	Nessa classe X devemos criar um método que vai tratar a requisição específica de erro no formulário, e dentro desse método vamos colocar a mensagem correta para ser mostrada ao cliente. Só que aqui temos outro problema, quando tratamos uma exception específica o Spring pensa que corrigimos o problema e passa a retornar 200 e nção foi isso que aconteceu, então temos que anotar esse método para continuar respondendo 400 - Bad Request;
+	3.	A classe X deve receber uma anotação para indicar que é um Interceptadorde Exception (controller advice);
+	4.	O método também deve ter anotações, uma para continuar respondendo status 400, outra para indicar qual exception ela trata específicamente. Esse método ainda deve receber por parametro essa exception, pois é atraves dela que pegamos as mensagens de errp;
+	5.	Devemos criar nessa classe X um objeto que irá ajudar a identificar qual o idioma o cliente está usando e com isso responder a ele no idioma correto.

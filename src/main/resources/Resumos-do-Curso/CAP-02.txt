@@ -1,0 +1,25 @@
+Capítulo 02 - Publicando Endpoints
+Nesse capítulo aprendemos:
+
+⦁	Importamos as classes de Modelo que o professor do curso disponibilizou;
+
+⦁	Historia do REST:
+		REST é abreviação de Representational State Transfer, em portugês Trasnferência do Estado Represental. Ele é uma arquitetura para sistemas distribuídos (local onde há sistema conversando com outro sistema). O criador do REST foi Roy Fielding, este também foi um dos criadores do protocolo HTTP. Seus princípios: 1) baseado em cliente/servidor sem estado, ou seja, cada requisição é uma nova requisição, não se sabe o que ocorreu na requisição anterior; 2) cada recurso deve ser identificado de forma única pela URI, exemplo de recurso = localhost:8080/forum/aluno -> aluno é um recurso; 3) operações bem definidas através dos verbos HTTP, ou seja, um recurso vai sofrer uma ação baseada no verbo (Post, Get, Delete..); 4) os dados são representados por Media Types (Json, HTML, XML...) e é apenas a representação que é transferida e não o dado em si.
+
+⦁	Aprendemos que para classificar uma classe como Controller (classe que recebe requisição) podemos anotá-la com @Controller, mas essa anotação faz o Spring pensar que o retorno dos métodos será uma Página Web, pois essa anotação é para controller genérico e o padão é esse. Usando essa anotação os métodos precisam receber @ResponseBody, assim o spring passa a esperar na resposta uma representação através do Corpo da Requisição (Respose Body);
+
+⦁	Para mapear um método a uma URI devemos usar a anotação @RequestMaping("/EndereçoDoRecurso");
+
+⦁	Para indicar que nosso Controller é de uma API Rest podemos então tirar @Controller e por @RestController, com isso o Spring sabe que os métodos vão retornar uma representação e que esse retorno será no Body da Response, usando essa anotação podemos tirar o @ResponseBody dos métodos;
+
+⦁	Devemos usar DTO (Data Transfer Object) que é uma representação da nossa classe que será a resposta a uma requisição. Poderíamos devolver objeto real, mas com uma DTO podemos mudar os nomes dos atributos, podemos filtar quais serão devolvidos (um password eu não quero devolver). Assim quem consome nossa API não conhece a verdadeira estrutura de nossa base de dados;
+
+⦁	Exemplo de DTO, no nosso projeto vamos listar Tópicos, logo devolveriamos uma lista de tópicos. Com DTO vamos devolver uma lista de tópicos DTO: List<TopicoDTO> topicos;
+	Para fazer essa transformação de DTO podemos criar um método na classe TopicoDTO que irá criar um TopicoDTO recebendo um tópico, ou então usar o construtor da classe TopicoDTO recebendo um Tópico, pois assim ao criar um TopicoDTO a pessoa é obrigada a passar junto um Topico e internamente o construtor vai saber transformar;
+
+⦁	Podemos por um módulo do Spring que reinicia automaticamente o Servidor Tom Cat ao salvarmos qualquer mudança no código. Para isso basta ir no arquivo POM.XML e adicionar entre as tags <dependencies>:
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-devtools</artifactId>
+		<scope>runtime</scope>
+	</dependency>

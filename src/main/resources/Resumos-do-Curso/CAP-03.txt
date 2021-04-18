@@ -1,0 +1,60 @@
+Capítulo 03 - Usando Spring Data
+Nesse capítulo aprendemos:
+
+⦁	A adicionar o JPA em nossa aplicação. Para isso bastou colocar a dependencia do JPA no arquivo pom.xml:
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+
+⦁	A adicionar um banco de dados em nossa aplicação, para isso seguir os passos:
+	1.	Adicionar a dependencia do banco de dados no arquivo pom.xml: 
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+
+	2. Configurar a JPA e o Database (Banco de Dados) no arquivo: src/main/resources/application.properties:
+	# data source
+	spring.datasource.driverClassName=com.mysql.jdbc.Driver
+	spring.datasource.url=jdbc:mysql://localhost/alura_api
+	spring.datasource.username=root
+	spring.datasource.password=mysql
+	# jpa
+	spring.jpa.database-platform=org.hibernate.dialect.MySQL5InnoDBDialect
+	spring.jpa.hibernate.ddl-auto=update
+	
+	3. Configurar as classes de modelo para serem gerenciadas pelo JPA. No caso devemos anotar @Entity em toda classe modelo; @Id @GeneratedValue nos atributos de id; @Enumerated nos atributos do tipo Enum; @ManyToOne nos atributos de relacionamento; @OneToMany nas listas de relacionamento com outra classe.
+	Obs: No @OneToMany estamos invertendo a visibilidade, pois o comum é o lado N da relação acessar o outro lado, portanto devemos usar (mappedBy = "NomeDoAtributoQueEstaDoLadoN"
+
+⦁	Para usar o JPA Repository todas as classes de Modelo precisam ter o construtor default, ou seja, sem atributos!
+
+⦁	A usar o padrão Repository para persistir/consultar/alterar/deletar um objeto. Criamos o TopicoRepository, para isso:
+	1.	Criar interface TopicoRepository extend JPARepository<Topico,Long>;
+	2.	Essa interface já traz todos métodos básiso do CRUD.
+
+⦁	Usando o TopicoRepository:
+	1.	Na classe TopicoController criar o atributo private TopicoRepository e anota-lo com @Autowired;
+	2.	chamar do objeto TopicoRepository o método (CRUD) desejado.
+
+⦁	Criando métodos personalizados em TopicoRepository, por exemplo uma busca com filtro.
+	Há duas maneiras para isso:
+	Maneira 1 - Utilizando Conversão de Nomes do Spring:
+	
+	1.	Sabemos que a classe Topico se relaciona com a clsse Curso e que Curso tem um atributo chamado nome. Poderiamos fazer uma busca por topicos cujo o curso tenha X nome. Para isso basta criar em TopicoRepository a seguinte assinatura de método:
+	public List<Topico> findByCursoNome (String nome);
+	Dessa maneira estamos navegando pelos atributos de topico. findBy (Busca que aplica filtro) -> Curso (Atributo de relacionamento entre Topico e Curso) -> Nome (Atributo da classe Curso que guarda o nome)
+	Sabemos que a classe Topico tem o atributo Titulo, poderiamos fazer uma busca por esse atributo, ficaria assim:
+	public List<Topico> findByTitulo (String titulo);
+	Obs: No primeiro exemplo haveria uma ambiguidade caso a classe Topico tivesse um atributo com o nome cursoNome, assim o Spring não saberia se quer acessar o relacionamento de Curso com Topico ou se deseja o atributo com mesmo nome. Podemos deixar claro quando o desejo é pelo relaciomaneto! Usamos com ''_'':
+	public List<Topico> findByCurso_Nome (String nome);
+
+	Maneira 2 - Criando uma JPQL na mão:
+	1.	Criar uma assinatura com o nome desejado na interface TopicoRepository, vou realizar a mesma busca da maneira anterior, por Nome de Curso:
+		public List<Topicos> buscaTopicoPorNomeDeCurso (String nome);
+	2.	Anotar esse método com @Query
+	3.	Escrever dentro da anotação @Query a query desejada, por exemplo: ("SELECT t from Topico t WHERE t.curso.nome = :nomeCurso")
+	4.	No atributo da assinatura demos linkar o mesmo com a query, adicionando o @Param("nomeCurso)
+	5.	Query ficaria assim:
+	@Query("SELECT t from Topico t WHERE t.curso.nome = :nomeCurso")public List<Topico> buscaTopicoPorNomeDeCurso (@Param("nomeCurso")String nome);
